@@ -45,7 +45,7 @@ If multiple edges are at the right distance, there will be a single strong _ripp
 
 From the same diagram, we can also see that not all collection of edges result in singular _ripples_ with a particular Laplacian operator. By increasing the <ins>sigma (σ)</ins> of the Laplacian (making the kernel "fatter"), the constructive interference will occur when edges are further apart. If we apply the Laplacian operators many times with varying σ's, blobs of different scales can be identified each time.
 
-![]({/assets/img/2022-04-13-5.jpg)
+![](/assets/img/2022-04-13-5.jpg)
 _Image from Princeton CS429 - Increasing σ to identify larger blobs_
 
 Wait but if the σ is larger, the Laplacian response will be weaker (shown above). Intuitively, if the responses by larger blobs are penalized for their sizes. Does that means the selected features will be mostly tiny?
