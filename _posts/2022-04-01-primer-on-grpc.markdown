@@ -16,7 +16,7 @@ Google introduced it to unify the client libraries. Google will build and mainta
 
 <ins>Protobuf payload</ins>: The common client-server communication in the web is JSON-over-REST. Even though JSON is flexible and human-readable, there is no data compression which means that payload size is not optimal for transmission over the network. Protocol buffer is the message format in gRPC. It solves the problems with JSON by applying data compression on the payload before sending over the network. Protocol buffer also provides type safety as schemas are encoded along with the data to ensure that signals do not get lose between applications. Validation in JSON has to be done at code level, but it is automatically done during encoding and decoding for protobuf.
 
-{% highlight protobuf %}
+```protobuf
 message SearchRequest {
   string query = 1;
   int32 page_number = 2;
@@ -29,7 +29,7 @@ message SearchRequest {
   }
   Corpus corpus = 4;
 }
-{% endhighlight %}
+```
 
 <ins>HTTP/2</ins>: The current gRPC implementation utilizes HTTP/2 as the underlying mechanism which provides multiple streams along a single TCP connection. This solves the head-of-line blocking issue of HTTP/1.1 thus packets will generally be transport faster. With the multiplexing mechanism of HTTP/2, gRPC also allows cancellation of requests. Unlike REST APIs, cancellation of request can propagate to the server to reduce any unnecessary workload.
 

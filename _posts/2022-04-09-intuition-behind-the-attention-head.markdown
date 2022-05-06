@@ -23,26 +23,26 @@ Consider that matrix **A** represents the sequence - _pool beats badminton_. The
 ![Matrix-A](/assets/img/2022-04-09-1.jpg)
 _Diagram by Author_
 
-{% highlight python %}
+```python
 A = np.array([
   [0.5, 0.1, 0.1, 0.2],
   [0.1, 0.5, 0.2, 0.1],
   [0.5, 0.1, 0.2, 0.1],
 ])
-{% endhighlight %}
+```
 
 If we do a matrix multiplication between **A** and **A<sup>T</sup>**, the resulting matrix will be the dot-product similarities between all possible pairs of words. For example, the word _pool_ is more similar to _badminton_ than the word _beats_. In other words, this matrix hints that the word _badminton_ should be more important than the word _beats_ when adding more context to the word embedding of _pool_.
 
 ![Similarity](/assets/img/2022-04-09-2.jpg)
 _Diagram by Author_
 
-{% highlight python %}
+```
 A_At = np.matmul(A, A.T)
 >>> A_At
 array([[0.31, 0.14, 0.3 ],
        [0.14, 0.31, 0.15],
        [0.3 , 0.15, 0.31]])
-{% endhighlight %}
+```
 
 By applying the softmax function across each word, we can ensure that these "similarity scores" add up to 1.0.
 
@@ -51,7 +51,7 @@ The last step is to do another matrix multiplication with matrix **A**. In a way
 ![Result](/assets/img/2022-04-09-3.jpg)
 _Diagram by Author_
 
-{% highlight python %}
+```
 output = np.round(
     np.matmul(softmax(A_At, axis=1), A)
 , 2)
@@ -59,7 +59,7 @@ output = np.round(
 array([[0.38, 0.22, 0.16, 0.14],
        [0.35, 0.25, 0.17, 0.13],
        [0.38, 0.22, 0.17, 0.13]])
-{% endhighlight %}
+```
 
 Notice that the output matrix has the same dimensions (3 x 4) as the original input **A**. The intuition is that each word vector is now enriched with more information. This is the gist of the <ins>self-attention</ins> mechanism.
 

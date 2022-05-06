@@ -10,7 +10,7 @@ tags: [JavaScript, Software-Engineering]
 
 Immediately-invoked Function Expression are anonymous functions that wrap around code blocks to be imported. In the example below, the inner function `sayHi()` cannot be accessed outside the anonymous function. The anonymous function itself also does not have a name so it does not pollute the global scope.
 
-{% highlight javascript %}
+```javascript
 // script1.js
 (function () {
     var userName = "Steve";
@@ -19,11 +19,11 @@ Immediately-invoked Function Expression are anonymous functions that wrap around
     }
     sayHi(userName);
 })();
-{% endhighlight %}
+```
 
 If this script is included as shown below, no variable name collision can occur with other scripts such as `script2.js`.
 
-{% highlight html %}
+```html
 <!DOCTYPE html>
 <html>
     <head>
@@ -35,13 +35,13 @@ If this script is included as shown below, no variable name collision can occur 
         <h1>IIFE Demo</h1>
     </body>
 </html>
-{% endhighlight %}
+```
 
 ### Problems with IIFE
 
 What if `script2.js` wants to use the `sayHi()` function defined in `script1.js`? We can pass a common global variable through the two IIFE modules as shown below.
 
-{% highlight javascript %}
+```javascript
 // script1.js
 (function (window) {
     function sayHi(name) {
@@ -49,9 +49,9 @@ What if `script2.js` wants to use the `sayHi()` function defined in `script1.js`
     }
     window.script1 = { sayHi };
 })(window);
-{% endhighlight %}
+```
 
-{% highlight javascript %}
+```javascript
 // script2.js
 (function (window) {
     function sayHiBye(name) {
@@ -61,7 +61,7 @@ What if `script2.js` wants to use the `sayHi()` function defined in `script1.js`
     var userName = "Jenny";
     sayHiBye(userName);
 })(window);
-{% endhighlight %}
+```
 
 This solves the immediate problem, but generates other issues.
 
@@ -75,15 +75,15 @@ There is also the problem of what common variable to pass between the two IIFE. 
 
 There is no more need for passing around a global variable or wrapping an anonymous function around every code blocks for export.
 
-{% highlight javascript %}
+```javascript
 // script1.js
 function sayHi(name) {
     console.log("Hi " + name);
 }
 module.exports.sayHi = sayHi;
-{% endhighlight %}
+```
 
-{% highlight javascript %}
+```javascript
 // script2.js
 script1 = require("./script1.js");
 function sayHiBye(name) {
@@ -92,7 +92,7 @@ function sayHiBye(name) {
 }
 var userName = "Jenny";
 sayHiBye(userName);
-{% endhighlight %}
+```
 
 However, CommonJS was not meant for the browser environment. The specifications also do not support asychronous loading of the modules which is important in the browser environment for the user experience.
 
@@ -102,7 +102,7 @@ Module bundlers such as [Webpack](https://webpack.js.org/) solves the incompatib
 
 For the example above, webpack can produce a single `bundle.js` with `script2.js` as an entry. The bundle will include `script1.js` first as it understands the dependency graph. By including the `bundle.js` into HTML as shown below, the abovementioned problems with CommonJS are fixed.
 
-{% highlight html %}
+```html
 <!DOCTYPE html>
 <html>
     <head>
@@ -113,13 +113,13 @@ For the example above, webpack can produce a single `bundle.js` with `script2.js
         <h1>Webpack Demo</h1>
     </body>
 </html>
-{% endhighlight %}
+```
 
 ### ES6 - Module system as part of JavaScript standard
 
 [ES6](https://www.w3schools.com/js/js_es6.asp) is a JavaScript standard introduced in 2015 that finally introduced a module system for JavaScript in the browsers. ES6 modules utilize `import` and `export` keywords. Unlike CommonJS, webpack is not necessary for browser compatibility. We only need to add a `type="module"` attribute inside the HTML `<script>` tag and everything will work out of the box.
 
-{% highlight html %}
+```html
 <!DOCTYPE html>
 <html>
     <head>
@@ -130,17 +130,17 @@ For the example above, webpack can produce a single `bundle.js` with `script2.js
         <h1>ES6 Demo</h1>
     </body>
 </html>
-{% endhighlight %}
+```
 
-{% highlight javascript %}
+```javascript
 // script1.js
 function sayHi(name) {
     console.log("Hi " + name);
 }
 export default { sayHi };
-{% endhighlight %}
+```
 
-{% highlight javascript %}
+```javascript
 // script2.js
 import script1 from './script1.js';
 function sayHiBye(name) {
@@ -149,7 +149,7 @@ function sayHiBye(name) {
 }
 var userName = "Jenny";
 sayHiBye(userName);
-{% endhighlight %}
+```
 
 ### Why are bundlers still used for browser scripts?
 

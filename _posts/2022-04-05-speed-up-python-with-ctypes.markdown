@@ -14,7 +14,7 @@ In this post, I will be discussing the `ctypes` module. It provides C-compatible
 
 I have created a sample program that we can speed up afterwards using the `ctypes` module. The `num_primes()` calculates the total number of primes in a list by looping through each item.
 
-{% highlight python %}
+```python
 # prime.py
 def is_prime(num: int):
     for i in range(2, int(num**(0.5))):
@@ -27,11 +27,11 @@ def num_primes(num_list: List[int]):
     for num in num_list:
         count += is_prime(num)
     return count
-{% endhighlight %}
+```
 
 Let's see the number of primes in a list of 1 million integers. Note that we use consecutive numbers for the example but it does not have to be.
 
-{% highlight python %}
+```python
 from prime import num_primes
 
 MAX_NUM = 1000000
@@ -41,15 +41,15 @@ def timeit_function():
     return num_primes(num_list)
 
 print(timeit_function())
-{% endhighlight %}
+```
 
 It takes around 3.4 seconds to run. How can we speed this up?
 
-{% highlight none %}
+```
 >>> python -m timeit -n 5 -s 'import test_python as t' 't.timeit_function()'
 Primes: 921295
 5 loops, best of 5: 3.4 sec per loop
-{% endhighlight %}
+```
 
 ### Why Python threading module does not work
 
@@ -59,7 +59,7 @@ As Python has a `threading` module, one idea is to parallalize calculations acro
 
 The prime checker is reimplemented in C as shown below, then compiled it into a shared library `prime.so`. Note that the program logic is exactly the same.
 
-{% highlight c %}
+```c
 // prime.c
 #include <stdio.h>
 #include <math.h>
@@ -78,7 +78,7 @@ int num_primes(int arrSize, int *numArr) {
         count += is_prime(numArr[i]);
     return count;
 }
-{% endhighlight %}
+```
 
 ### Calling the C-compiled prime checker with ctypes
 
@@ -86,7 +86,7 @@ int num_primes(int arrSize, int *numArr) {
 
 The `ctypes` library provides C-compatible data types in Python. All we need to do is load the shared library with `CDLL()` API and then declare the parameters/ return types accordingly with `argtypes` and `restype` attributes.
 
-{% highlight python %}
+```python
 from ctypes import *
 
 # Load the shared library
@@ -95,11 +95,11 @@ lib = CDLL("./libprime.so")
 lib.num_primes.restype = c_int32
 # Declare the arguments as a 32-bit int and a pointer for 32-bit int (for list)
 lib.num_primes.argtypes = [c_int32, POINTER(c_int32)]
-{% endhighlight %}
+```
 
 Afterwards, the `num_primes()` in the shared library can be called! Note that the `num_list` has to be converted from Python list into a contiguous array of C with a method provided by `ctypes`.
 
-{% highlight python %}
+```python
 MAX_NUM = 1000000
 num_list = list(range(MAX_NUM))
 
@@ -108,15 +108,15 @@ def timeit_function():
     return lib.num_primes(MAX_NUM, (c_int32 * MAX_NUM)(*num_list))
 
 print(f"Primes: {timeit_function()}")
-{% endhighlight %}
+```
 
 For the same input of 1 million integers, the speed up is significant just by offloading the same program logic to C code. It makes sense because contiguous arrays in C can leverage caching mechanisms better than lists in Python.
 
-{% highlight none %}
+```
 >>> python -m timeit -n 5 -s 'import test_ctypes as t' 't.timeit_function()'
 Primes: 921295
 5 loops, best of 5: 482 msec per loop
-{% endhighlight %}
+```
 
 ### Multithreading in the C shared library with POSIX pthreads
 
@@ -124,7 +124,7 @@ There is one more benefit of offloading the work to C. Since the shared library 
 
 In the code below, the integer array is split evenly into 4 subarrays and 4 threads are spawned with POSIX `pthreads` to do parallel work. Each thread runs `thread_function()` to check the numbers in the array without any overlap between threads. The counts of prime numbers are added into `countByThreads` array which are summed up after the child threads have terminated.
 
-{% highlight c %}
+```c
 #define NUM_THREADS 4                       // 4 threads used
 
 // Global variables for spawn threads to access
@@ -164,21 +164,21 @@ int num_primes(int arrSize, int *numArr) {
     }
     return count;
 }
-{% endhighlight %}
+```
 
 We have further sped up the code execution although there is an additional overhead of managing threads.
 
-{% highlight none %}
+```
 >>> python -m timeit -n 5 -s 'import test_ctypes_pthread as t' 't.timeit_function()'
 Primes: 921295
 5 loops, best of 5: 322 msec per loop
-{% endhighlight %}
+```
 
 ### Calling the C-compiled prime checker with Python threading
 
 Remember the `threading` module in Python just now? Another neat thing about `ctypes` is that the program releases the GIL as long as the execution is inside the C-compiled shared library. So instead of POSIX `pthreads` in C, we can generate the threads with `threading` instead!
 
-{% highlight python %}
+```python
 from ctypes import *
 
 # Load the shared library
@@ -187,11 +187,11 @@ lib = CDLL("./libprime.so")
 lib.num_primes.restype = c_int32
 # Declare the arguments as a 32-bit integer & a pointer for 32-bit integer (for list)
 lib.num_primes.argtypes = [c_int32, POINTER(c_int32)]
-{% endhighlight %}
+```
 
 Afterwards, the `num_primes()` in the shared library can be called! Note that the `num_list` has to be converted from Python list into a contiguous array with a method provided by `ctypes`.
 
-{% highlight python %}
+```python
 MAX_NUM = 1000000
 NUM_THREADS = 4
 
@@ -221,15 +221,15 @@ def timeit_function():
     return sum(count_list) # Combine counts from each thread
     
 print(f"Primes: {timeit_function()}")
-{% endhighlight %}
+```
 
 For this example, the speed up is comparable to using `pthreads`.
 
-{% highlight none %}
+```
 >>> python -m timeit -n 5 -s 'import test_ctypes_threading as t' 't.timeit_function()'
 Primes: 921295
 5 loops, best of 5: 313 msec per loop
-{% endhighlight %}
+```
 
 The code demonstrations can be found [here](https://github.com/yarkhinephyo/python-threading-with-ctypes).
 
