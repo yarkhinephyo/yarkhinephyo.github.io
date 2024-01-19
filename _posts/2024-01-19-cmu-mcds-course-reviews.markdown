@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "CMU MCDS Course Reviews"
-date: 2023-01-19 10:00:00 +0800
+date: 2024-01-19 10:00:00 +0800
 category: [School]
 tags: [Other]
 ---
