@@ -6,7 +6,7 @@ category: [School]
 tags: [Other]
 ---
 
-Over the last 1.5 years, I studied Master of Computational Data Science (MCDS) at Carnegie Mellon University. Inspired by blogs such as [fanpu.io](fanpu.io) and [wanshenl.me](wanshenl.me), I am going to outline my experiences for each course to hopefully help future students.
+Over the last 1.5 years, I studied Master of Computational Data Science (MCDS) at Carnegie Mellon University. Inspired by blogs such as [fanpu.io](https://fanpu.io) and [wanshenl.me](https://wanshenl.me), I am going to outline my experiences for each course to hopefully help future students.
 
 ### Summer 2022
 
