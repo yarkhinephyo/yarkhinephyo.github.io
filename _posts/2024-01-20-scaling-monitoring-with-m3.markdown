@@ -109,7 +109,7 @@ To solve this, M3 Coordinators were separately deployed for read and writes. CPU
 
 Vanilla Prometheus servers that scrape M3 related components. Metrics retention period is short but it is sufficient for the use case.
 
-Global Prometheus server to federate metrics for all the Premetheus server.
+Global Prometheus server to federate metrics for all the Prometheus server.
 
 ### Final Architecture
 
