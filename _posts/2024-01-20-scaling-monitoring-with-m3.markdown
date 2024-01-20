@@ -1,6 +1,6 @@
 ---
 layout: post
-  title: "Learning Points: Scaling Monitoring from Prometheus to M3"
+title: "Learning Points: Scaling Monitoring from Prometheus to M3"
 date: 2024-01-20 11:30:00 +0800
 category: [Tech]
 tags: [Software-Engineering, Video-Takeaway]
