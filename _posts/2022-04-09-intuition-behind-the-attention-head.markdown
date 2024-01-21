@@ -3,7 +3,7 @@ layout: post
 title: "Intuition Behind the Attention Head of Transformers"
 date: 2022-04-09 14:20:00 +0800
 category: [Tech]
-tags: [NLP, Data-Science]
+tags: [Data-Science]
 ---
 
 Even as I frequently use transformers for NLP projects, I have struggled with the intuition behind the multi-head attention mechanism outlined in the paper - [Attention Is All You Need](https://arxiv.org/abs/1706.03762). This post will act as a memo for my future self.

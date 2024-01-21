@@ -3,7 +3,7 @@ layout: post
 title: "Primer to Scale-invariant Feature Transform"
 date: 2022-04-13 09:30:00 +0800
 category: [Tech]
-tags: [Computer-Vision, Software-Engineering]
+tags: [Data-Science]
 ---
 
 Scale-invariant Feature Transform, also known as SIFT, is a method to consistently represent features in an image even under different scales, rotations and lighting conditions. Since the video series by First Principles of Computer Vision covers the details very well, the post covers mainly my intuition. The topic requires prior knowledge on using [Laplacian of Gaussian](https://en.wikipedia.org/wiki/Discrete_Laplace_operator) for edge detection in images.
