@@ -6,7 +6,7 @@ category: [Tech]
 tags: [Networking, System-Design, Learning-Points]
 ---
 
-This [video](https://youtu.be/tq9ng_Nz9j8?si=hv_AtmaoddIL7rBs) is about how networking works in Kubernetes by Bowei Du and Tim Hockin and the following are my notes.
+This [video](https://youtu.be/tq9ng_Nz9j8?si=hv_AtmaoddIL7rBs) is about how networking works in Kubernetes by Bowei Du and Tim Hockin from Google.
 
 ### Networking APIs Exposed by Kubernetes
 
