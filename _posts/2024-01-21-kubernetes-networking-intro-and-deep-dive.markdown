@@ -3,7 +3,7 @@ layout: post
 title: "Learning Points: Kubernetes Networking Deep Dive"
 date: 2024-01-20 11:30:00 +0800
 category: [Tech]
-tags: [Networking, Video-Takeaway]
+tags: [Networking, System-Design, Learning-Points]
 ---
 
 This [video](https://youtu.be/tq9ng_Nz9j8?si=hv_AtmaoddIL7rBs) is about how networking works in Kubernetes by Bowei Du and Tim Hockin and the following are my notes.

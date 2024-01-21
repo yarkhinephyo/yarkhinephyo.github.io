@@ -3,7 +3,7 @@ layout: post
 title: "Data Structures Behind Git"
 date: 2022-05-13 08:22:00 +0800
 category: [Tech]
-tags: [Software-Engineering]
+tags: [Git]
 ---
 
 The underlying data structure of a Git repository is just a directed acylic graph (DAG). Not only the core idea is simple, the implementation can be easily inspected in the `.git` directory. Let's break it down.

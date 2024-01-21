@@ -3,7 +3,7 @@ layout: post
 title: "JVM Garbage Collectors - Serial, Parallel, CMS"
 date: 2022-05-06 17:00:00 +0800
 category: [Tech]
-tags: [Software-Engineering, Java]
+tags: [Java]
 ---
 
 Depending on the resources available and the performance metric of an application, different Garbage Collectors (GC) should be considered for the underlying Java Virtual Machine. This post explains the main idea behind the garbage collection process in JVM and summarizes the pros and cons of Serial GC, Parallel GC and Concurrent-Mark-Sweep GC. 

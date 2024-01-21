@@ -3,7 +3,7 @@ layout: post
 title: "Git Submodules Cheatsheet"
 date: 2022-04-17 00:30:00 +0800
 category: [Tech]
-tags: [Software-Engineering]
+tags: [Git]
 ---
 
 [Git Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) allows one Git repository to be a subdirectory of another. I keep forgetting the commands so I have created a 2-minute refresher for my future reference.

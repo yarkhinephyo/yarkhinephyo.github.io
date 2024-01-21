@@ -3,7 +3,7 @@ layout: post
 title: "Learning Points: Scaling Monitoring from Prometheus to M3"
 date: 2024-01-20 11:30:00 +0800
 category: [Tech]
-tags: [Software-Engineering, Video-Takeaway]
+tags: [System-Design, Learning-Points]
 ---
 
 I enjoy watching 45 minutes to 1 hour long technical talks at conferences. Unfortunately, I am not retaining the knowledge as long as I would like to. From now on, I am going to try summarizing my takeaways for each videos to improve my own retention.

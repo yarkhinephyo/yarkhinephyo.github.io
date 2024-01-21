@@ -3,7 +3,7 @@ layout: post
 title: "CMU MCDS Course Reviews"
 date: 2024-01-19 10:00:00 +0800
 category: [School]
-tags: [Other]
+tags: [CMU]
 ---
 
 Over the last 1.5 years, I studied Master of Computational Data Science (MCDS) at Carnegie Mellon University. Inspired by blogs such as [fanpu.io](https://fanpu.io) and [wanshenl.me](https://wanshenl.me), I am going to outline my experiences for each course to hopefully help future students.

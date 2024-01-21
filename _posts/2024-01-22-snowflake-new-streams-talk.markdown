@@ -1,9 +1,9 @@
 ---
 layout: post
 title: "Learning Points: Snowflake Iceberg, Streaming, Unistore"
-date: 2024-01-21 10:30:00 +0800
+date: 2024-01-21 10:20:00 +0800
 category: [Tech]
-tags: [Video-Takeaway]
+tags: [Data-Engineering, System-Design, Learning-Points]
 ---
 
 This [video](https://youtu.be/Kr-Vzvkyabw?si=uo_ZV4IpUHhE9MJU) is about Snowflake Iceberg Tables, Streaming Ingest and Unistore. The presenters are N.Single, T.Jones and A.Motivala as part of the Database Seminar Series by CMU Database Group.

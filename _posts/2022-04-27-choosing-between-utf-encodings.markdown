@@ -3,7 +3,7 @@ layout: post
 title: "Choosing Between UTF Encodings"
 date: 2022-04-27 12:07:00 +0800
 category: [Tech]
-tags: [Software-Engineering]
+tags: [Data-Engineering]
 ---
 
 Have you occasionally chosen a character encoding such as UTF-8 during reading and writing files while wondering its purpose? I have! This post explains various UTF (Unicode Transformation Format) algorithms such as UTF-8, UTF-16, UTF32 and how to choose between them.

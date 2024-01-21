@@ -3,7 +3,7 @@ layout: post
 title: "Solving HTTP/1 Problems With HTTP/2"
 date: 2022-05-02 11:09:00 +0800
 category: [Tech]
-tags: [Software-Engineering, Networking]
+tags: [Networking]
 ---
 
 HTTP/2 has made our applications faster and more robust by providing protocol enhancements over HTTP/1. This post only focuses on the major pain points of HTTP/1 and how the new protocol has been engineered to overcome them. It is assumed that the reader is familiar with how HTTP/1 works.

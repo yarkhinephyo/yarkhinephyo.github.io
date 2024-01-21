@@ -3,7 +3,7 @@ layout: post
 title: "Quick History of JavaScript Module Ecosystem"
 date: 2022-04-07 11:02:00 +0800
 category: [Tech]
-tags: [JavaScript, Software-Engineering]
+tags: [JavaScript]
 ---
 
 ### IIFE - Initial Concept of JS Modules

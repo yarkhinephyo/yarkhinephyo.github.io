@@ -3,7 +3,7 @@ layout: post
 title: "Speed up Python applications With Ctypes Library"
 date: 2022-04-05 10:00:00 +0800
 category: [Tech]
-tags: [Python, C, Concurrency, Software-Engineering]
+tags: [Python, C, Concurrency]
 ---
 
 There are multiple ways to speed up computations in Python. The `cython` language compiles Python-like syntax into `CPython` extensions. Libraries such as `numpy` provides methods to manipulate large arrays and matrices efficiently with underlying C data structures. 
