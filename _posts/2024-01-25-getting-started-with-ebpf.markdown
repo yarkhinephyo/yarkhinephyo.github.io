@@ -3,7 +3,7 @@ layout: post
 title: "Learning Points: Getting Started with eBPF"
 date: 2024-01-25 11:00:00 +0800
 category: [Tech]
-tags: [C, Networking, Learning-Points]
+tags: [C, Networking, Operating-System, Learning-Points]
 ---
 
 This [video](https://youtu.be/TJgxjVTZtfw?si=7wepOfWoMZYa35sP) is an introductory video on eBPF presented by Liz Rice from Isovalent. In the video description, there are also really interesting hands-on exercises.
