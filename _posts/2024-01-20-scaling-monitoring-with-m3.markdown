@@ -20,7 +20,7 @@ Globally, there is a Prometheus server that contain a subset of metrics federate
 
 Users interact with the monitoring system in two ways: alerting and querying. Regional Prometheus servers issue alerts to the Alert Manager Service which notifies engineers via PagerDuty. Users also query regional or global servers for insights.
 
-![](/assets/img/2023-01-20-1.jpg)
+![](/assets/img/2024-01-20-1.jpg)
 
 ### Problem
 
@@ -113,4 +113,4 @@ Global Prometheus server to federate metrics for all the Prometheus server.
 
 ### Final Architecture
 
-![](/assets/img/2023-01-20-2.jpg)
+![](/assets/img/2024-01-20-2.jpg)
