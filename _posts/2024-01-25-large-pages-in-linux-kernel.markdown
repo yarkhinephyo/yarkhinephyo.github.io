@@ -3,7 +3,7 @@ layout: post
 title: "Learning Points: Large Pages in the Linux Kernel"
 date: 2024-01-25 20:00:00 +0800
 category: [Tech]
-tags: [Operating-System, Learning-Points]
+tags: [Operating-System, Learning-Points, Database]
 ---
 
 This [video](https://youtu.be/hoSpvGxXgNg?si=7KhmP_flQ4LLoYm0) talks about Large Pages in the Linux Kernel. The presenter is Matthew Wilcox from Oracle. Related to the topic, this [article](https://lwn.net/Articles/686690/) by Neil Brown talks about challenges of Transparent Huge Pages in the page cache.
