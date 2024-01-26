@@ -14,19 +14,20 @@ Memory is managed in pages. An Oracle server with 6TiB of memory has 1.5 billion
 
 - A long LRU list is inefficient since there is heavy contention for the lock.
 - TLB cache lines also have high misses. Larger page sizes means less entries in TLBs thus less evictions.
-- Having less pages means that there is less overhead from the address translation.
+- Large page table sizes per process, leading to OOM errors.
+- Having many pages means that there is more overhead from the address translation.
 
-### Huge Pages
+### Huge Pages (HugeTLB)
 
-Huge pages are blocks of memory that come in 2MB and 1GB sizes. Huge pages are configured by the administrators during boot time. They require significant code changes by application developers to be used effectively.
+Huge pages are blocks of memory that come in 2MB and 1GB sizes. Huge pages are reserved by the administrators during boot time. They require significant code changes by application developers to be used effectively. For example, mmap can be used with `MAP_HUGETBL` flag to allocate the huge pages that have been reserved.
 
 ### Compound Page
 
-Linux can allocate pages in 2<sup>n</sup> where n is the order of the page. First page is the head page and all the other pages are tail pages. The operation on tail pages usually redirect to the head page. This is used as a lower level construct to build other systems such as Transparent Huge Pages.
+A lower level construct for the kernel developers. Linux can allocate pages in 2<sup>n</sup> where n is the order of the page. First page is the head page and all the other pages are tail pages. The operation on tail pages usually redirect to the head page. This construct is used to build other systems such as Transparent Huge Pages.
 
-### Transparent Huge Pages
+### Transparent Huge Pages (THP)
 
-THP is transparent to the applications in handling Huge Pages. The old THP implementation only works for 2 MiB pages and mapping of anonymous memory. Modern kernels support the new THP which works with variable powers of two (4 KiB, 8 KiB, ...) in page sizes and added support for tmpfs (shared memory). Unlike the standard Huge Pages, THP allocates page sizes dynamically during runtime.
+THP allocates huge pages while being transparent to the applications. The old THP implementation only works for 2 MiB pages and mapping of anonymous memory. Modern kernels support the new THP which works with variable powers of two (4 KiB, 8 KiB, ...) in page sizes and added support for tmpfs (shared memory). Unlike the standard Huge Pages, THP allocates page sizes dynamically during runtime.
 
 Only some architectures support THP. Sometimes hardware supports larger page sizes, but there is no code in the Linux core. Furthermore, the filesystem authors (besides tmpfs) are unfamiliar with it.
 
@@ -51,6 +52,8 @@ However, in filesystems, memory used for file-backed data can be mapped concurre
 
 Furthermore, the space in files is not allocated by mapping but by the result of write calls. THP for files must allocate huge pages before the file is known to be big enough to utilize them.
 
-### THP in Databases
+### Huge Pages in Databases
 
-The dynamic page sizes that accompany THP may result in inefficient memory allocation for the use case of databases. Database systems rely on their own memory management systems, designed to optimize performance based on the application context. THP can conflict with these built-in memory management strategies.
+Standard huge pages (HugeTLB) can be beneficial as page table sizes are reduced, leading to less memory usage by the kernel.
+
+However for THP, the dynamic page sizes means that memory allocation by the kernel may be inefficient for the use case of databases. Database systems rely on their own memory management systems, designed to optimize performance based on the application context. THP can conflict with these built-in memory management strategies.
