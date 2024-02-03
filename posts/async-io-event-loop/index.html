@@ -1,0 +1,231 @@
+<!doctype html><html lang="en" data-mode="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" ><meta name="generator" content="Jekyll v4.3.3" /><meta property="og:title" content="Generators - The Beginning of Asynchronicity in Python" /><meta property="og:locale" content="en" /><meta name="description" content="How Python generators are related to the async-await keywords." /><meta property="og:description" content="How Python generators are related to the async-await keywords." /><link rel="canonical" href="https://yarkhinephyo.github.io/posts/async-io-event-loop/" /><meta property="og:url" content="https://yarkhinephyo.github.io/posts/async-io-event-loop/" /><meta property="og:site_name" content="Phyo’s Log" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-04-03T09:00:00+00:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Generators - The Beginning of Asynchronicity in Python" /><meta name="google-site-verification" content="2UleTuNSIWIpwLx2fe8HmZnxBJIFsf8S8208z2wBbc4" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-01-21T02:30:54+00:00","datePublished":"2022-04-03T09:00:00+00:00","description":"How Python generators are related to the async-await keywords.","headline":"Generators - The Beginning of Asynchronicity in Python","mainEntityOfPage":{"@type":"WebPage","@id":"https://yarkhinephyo.github.io/posts/async-io-event-loop/"},"url":"https://yarkhinephyo.github.io/posts/async-io-event-loop/"}</script><title>Generators - The Beginning of Asynchronicity in Python | Phyo's Log</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Phyo's Log"><meta name="application-name" content="Phyo's Log"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="/assets/css/jekyll-theme-chirpy.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.25.0/dist/tocbot.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"><body><aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end"><header class="profile-wrapper"> <a href="/" id="avatar" class="rounded-circle"><img src="/assets/img/me_2.jpg" width="112" height="112" alt="avatar" onerror="this.style.display='none'"></a><h1 class="site-title"> <a href="/">Phyo's Log</a></h1><p class="site-subtitle fst-italic mb-0">Thoughts on tech and random things that I read. For my future self with goldfish memory.</p></header><nav class="flex-column flex-grow-1 w-100 ps-0"><ul class="nav"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/timeline/" class="nav-link"> <i class="fa-fw fas fa-archive"></i> <span>TIMELINE</span> </a><li class="nav-item"> <a href="/about-me/" class="nav-link"> <i class="fa-fw fas fa-info-circle"></i> <span>ABOUT ME</span> </a></ul></nav><div class="sidebar-bottom d-flex flex-wrap align-items-center w-100"> <a href="https://github.com/yarkhinephyo" aria-label="github" target="_blank" rel="noopener noreferrer" > <i class="fab fa-github"></i> </a> <a href="javascript:location.href = 'mailto:' + ['yarkhinephyo','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="https://www.linkedin.com/in/yar-khine-phyo/" aria-label="linkedin" target="_blank" rel="noopener noreferrer" > <i class="fab fa-linkedin"></i> </a></div></aside><div id="main-wrapper" class="d-flex justify-content-center"><div class="container d-flex flex-column px-xxl-5"><header id="topbar-wrapper" aria-label="Top Bar"><div id="topbar" class="d-flex align-items-center justify-content-between px-lg-3 h-100" ><nav id="breadcrumb" aria-label="Breadcrumb"> <span> <a href="/"> Home </a> </span> <span>Generators - The Beginning of Asynchronicity in Python</span></nav><button type="button" id="sidebar-trigger" class="btn btn-link"> <i class="fas fa-bars fa-fw"></i> </button><div id="topbar-title"> Post</div><button type="button" id="search-trigger" class="btn btn-link"> <i class="fas fa-search fa-fw"></i> </button> <search class="align-items-center ms-3 ms-lg-0"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..." > </search> <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">Cancel</button></div></header><div class="row flex-grow-1"><main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4"><article class="px-1"><header><h1 data-toc-skip>Generators - The Beginning of Asynchronicity in Python</h1><div class="post-meta text-muted"> <span> Posted <time data-ts="1648976400" data-df="ll" data-bs-toggle="tooltip" data-bs-placement="bottom" > Apr 3, 2022 </time> </span> <span> Updated <time data-ts="1705804254" data-df="ll" data-bs-toggle="tooltip" data-bs-placement="bottom" > Jan 21, 2024 </time> </span><div class="d-flex justify-content-between"> <span> By <em> <a href="https://github.com/yarkhinephyo">Yar Khine Phyo</a> </em> </span> <span class="readtime" data-bs-toggle="tooltip" data-bs-placement="bottom" title="1151 words" > <em>6 min</em> read</span></div></div></header><div class="content"><p>If you have worked with asynchronous programming in Python, you may have used the <code class="language-plaintext highlighter-rouge">async</code> and <code class="language-plaintext highlighter-rouge">await</code> keywords before. It turns out that Python Generators are actually the building blocks of these abstractions. This article explain their relationship in a greater detail.</p><h3 id="coroutines"><span class="me-2">Coroutines</span><a href="#coroutines" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>For single-threaded asynchronous programming to work in Python, we need a mechanism to “pause” function calls. For example if a particular function involves fetching something from a database, we would like to “pause” the function’s execution and schedule something else until the response is received. However in traditional Python functions, the <code class="language-plaintext highlighter-rouge">return</code> keyword frees up the internal state at the end of invocation…</p><p>It turns out that generators in Python can achieve similar purpose! With generators, the <code class="language-plaintext highlighter-rouge">yield</code> keyword gives up the control of the thread while the internal state is saved until the next invocation. So we can do some multitasking with a scheduler as shown below.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">gen_one</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Gen one doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Gen one doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+<span class="k">def</span> <span class="nf">gen_two</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Gen two doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Gen two doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+<span class="k">def</span> <span class="nf">scheduler</span><span class="p">():</span>
+    <span class="n">g1</span> <span class="o">=</span> <span class="nf">gen_one</span><span class="p">()</span>
+    <span class="n">g2</span> <span class="o">=</span> <span class="nf">gen_two</span><span class="p">()</span>
+    <span class="nf">next</span><span class="p">(</span><span class="n">g1</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">(</span><span class="n">g1</span><span class="p">)</span>
+    <span class="nf">next</span><span class="p">(</span><span class="n">g2</span><span class="p">)</span>
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; scheduler()
+Gen one doing some work
+Gen two doing some work
+Gen one doing more work
+Gen two doing more work
+</pre></table></code></div></div><p>Coroutine is the term for suspendable functions. As generators cannot take in values like normal functions, new methods are introduced in PEP 342 including <code class="language-plaintext highlighter-rouge">.send()</code> that allows passing of parameters (and also <code class="language-plaintext highlighter-rouge">.throw()</code> and <code class="language-plaintext highlighter-rouge">.close()</code>).</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">coroutine_one</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine one doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="p">(</span><span class="k">yield</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Received data: </span><span class="si">{</span><span class="n">data</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine one doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+<span class="n">cor1</span> <span class="o">=</span> <span class="nf">coroutine_one</span><span class="p">()</span>
+<span class="n">cor1</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+<span class="n">cor1</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="sh">"</span><span class="s">lorem ipsum</span><span class="sh">"</span><span class="p">)</span>
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>Coroutine one doing some work
+Received data: lorem ipsum
+Coroutine one doing more work
+</pre></table></code></div></div><p>Let’s refer to generators as coroutines from now.</p><h3 id="nested-coroutines"><span class="me-2">Nested coroutines</span><a href="#nested-coroutines" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Another problem we have is that nested coroutines would not work with current syntax. As shown below, how will <code class="language-plaintext highlighter-rouge">coroutine_three()</code> call <code class="language-plaintext highlighter-rouge">coroutine_one()</code> and <code class="language-plaintext highlighter-rouge">coroutine_two()</code>? It is just a function that has two coroutine objects but has no ability to schedule them!</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">coroutine_one</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine one doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine one doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+<span class="k">def</span> <span class="nf">coroutine_two</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine two doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine two doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+
+<span class="c1"># Will not work as intended
+</span><span class="k">def</span> <span class="nf">coroutine_three</span><span class="p">():</span>
+    <span class="nf">coroutine_one</span><span class="p">()</span>
+    <span class="nf">coroutine_two</span><span class="p">()</span>
+</pre></table></code></div></div><p>To solve this, PEP 380 introduces the <code class="language-plaintext highlighter-rouge">yield from</code> operator. This allows a section of code containing <code class="language-plaintext highlighter-rouge">yield</code> to be factored out and placed in another generator. So in essence the <code class="language-plaintext highlighter-rouge">yield</code> calls are “flattened” so that the same scheduler that handles <code class="language-plaintext highlighter-rouge">coroutine_three()</code> can handle the nested coroutines. Furthermore, if the inner coroutines use <code class="language-plaintext highlighter-rouge">return</code>, the values can made available to <code class="language-plaintext highlighter-rouge">coroutine_three()</code>, just like traditional nested functions!</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">coroutine_three</span><span class="p">():</span>
+    <span class="k">yield</span> <span class="k">from</span> <span class="nf">coroutine_one</span><span class="p">()</span>
+    <span class="k">yield</span> <span class="k">from</span> <span class="nf">coroutine_two</span><span class="p">()</span>
+
+<span class="c1"># Equivalent code
+# The 'yield' calls in subgenerators are flattened
+</span><span class="k">def</span> <span class="nf">coroutine_three</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine one doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine one doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine two doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine two doing more work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="k">yield</span>
+</pre></table></code></div></div><h3 id="better-scheduler-function"><span class="me-2">Better scheduler function</span><a href="#better-scheduler-function" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The previous scheduler in the example interleaves the two coroutines manually. A more automatic implementation will be using a queue as shown below.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+</pre><td class="rouge-code"><pre><span class="kn">from</span> <span class="n">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+
+<span class="k">def</span> <span class="nf">scheduler</span><span class="p">(</span><span class="n">coroutines</span><span class="p">):</span>
+    <span class="n">q</span> <span class="o">=</span> <span class="nf">deque</span><span class="p">(</span><span class="n">coroutines</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">q</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">coroutine</span> <span class="o">=</span> <span class="n">q</span><span class="p">.</span><span class="nf">popleft</span><span class="p">()</span>
+            <span class="n">results</span> <span class="o">=</span> <span class="n">coroutine</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+            <span class="n">q</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">coroutine</span><span class="p">)</span>
+        <span class="k">except</span> <span class="nb">StopIteration</span><span class="p">:</span>
+            <span class="k">pass</span>
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; scheduler([coroutine_one(), coroutine_two()])
+Coroutine one doing some work
+Coroutine two doing some work
+Coroutine one doing more work
+Coroutine two doing more work
+</pre></table></code></div></div><h3 id="how-coroutines-help-with-asynchronous-io"><span class="me-2">How coroutines help with asynchronous I/O</span><a href="#how-coroutines-help-with-asynchronous-io" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>During I/O operations, a synchronous function will block the main thread until the I/O is ready. To carry out asychronous work on a single thread, a good way is for the scheduler to check all the coroutines in the queue and only allow those which are “ready” to run.</p><p>In the example below, <code class="language-plaintext highlighter-rouge">coroutine_four()</code> has to fetch data through I/O operation. While it is suspended as the kernel populates the read buffer, the scheduler allows other coroutines to occupy the thread. The scheduler only allows <code class="language-plaintext highlighter-rouge">coroutine_four()</code> to execute again when the I/O is ready.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+</pre><td class="rouge-code"><pre><span class="k">def</span> <span class="nf">fetch_data</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Fetching data awaiting IO..</span><span class="sh">"</span><span class="p">)</span>
+    <span class="c1"># Suspends coroutine while awaiting IO to be ready
+</span>    <span class="k">yield</span>
+
+    <span class="c1"># Let's assume that the scheduler only reschedules
+</span>    <span class="c1"># the coroutine again when IO is ready
+</span>    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Fetching data IO ready..</span><span class="sh">"</span><span class="p">)</span>
+    <span class="c1"># Mocked data
+</span>    <span class="k">return</span> <span class="mi">10</span>
+
+<span class="k">def</span> <span class="nf">coroutine_four</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine four doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">yield</span> <span class="k">from</span> <span class="nf">fetch_data</span><span class="p">()</span> <span class="c1"># I/O related coroutine
+</span>    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine four doing more work with data: </span><span class="sh">"</span> <span class="o">+</span> <span class="nf">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+    <span class="k">yield</span>
+</pre></table></code></div></div><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; scheduler([coroutine_one(), coroutine_four()])
+Coroutine one doing some work
+Coroutine four doing some work
+Fetching data awaiting IO..
+Coroutine one doing more work
+Fetching data IO ready..
+Coroutine four doing more work with data: 10
+</pre></table></code></div></div><h3 id="how-does-the-scheduler-check-for-io-completion"><span class="me-2">How does the scheduler check for I/O completion?</span><a href="#how-does-the-scheduler-check-for-io-completion" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>In the previous example, the I/O completion is mocked inside the <code class="language-plaintext highlighter-rouge">fetch_data()</code> coroutine. In reality, how does the scheduler know when the I/O is complete?</p><p>This is where <a href="https://docs.python.org/3/library/asyncio.html">AsyncIO</a> library comes in. It introduces concepts called <code class="language-plaintext highlighter-rouge">Future</code> and the Event Loop. <code class="language-plaintext highlighter-rouge">Future</code> objects are just coroutines that track whether the results (such as I/O) are ready or not. The Event Loop is just a for-loop that continuously schedules and runs coroutines, similar to our <code class="language-plaintext highlighter-rouge">scheduler()</code> function in the examples. At each iteration, the scheduler also <a href="https://man7.org/linux/man-pages/man2/poll.2.html">polls</a> for I/O operations to see which file descriptors are ready for I/O.</p><p>In essence, this is the pseudocode of the Event Loop in <code class="language-plaintext highlighter-rouge">asyncio</code>.</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre>while the event loop is not stopped:
+    poll for I/O and schedule reads/writes that are ready
+    schedule the coroutines set for a 'later' time
+    run the scheduled coroutines
+</pre></table></code></div></div><h3 id="cleaner-code-with-async-await"><span class="me-2">Cleaner code with async-await</span><a href="#cleaner-code-with-async-await" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Even though coroutines work well with the <code class="language-plaintext highlighter-rouge">yield</code> keyword of generators, it was not the original intention of the feature. From Python 3.5 onwards, coroutines were made first-class features with the introduction of <code class="language-plaintext highlighter-rouge">async</code> and <code class="language-plaintext highlighter-rouge">await</code> keywords.</p><p>There are some implementation differences but the main features remain the same. For example, assuming that <code class="language-plaintext highlighter-rouge">fetch_data()</code> returns an awaitable object, the <code class="language-plaintext highlighter-rouge">coroutine_four()</code> can be rewritten as shown below.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre><td class="rouge-code"><pre><span class="k">async</span> <span class="k">def</span> <span class="nf">coroutine_four</span><span class="p">():</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine four doing some work</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="k">await</span> <span class="nf">fetch_data</span><span class="p">()</span>
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Coroutine four doing more work with data: </span><span class="sh">"</span> <span class="o">+</span> <span class="nf">str</span><span class="p">(</span><span class="n">data</span><span class="p">))</span>
+</pre></table></code></div></div><p>The same coroutine methods such as <code class="language-plaintext highlighter-rouge">.send()</code> will still work but the purpose now a lot clearer!</p><h3 id="resources"><span class="me-2">Resources</span><a href="#resources" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><ol><li><a href="https://www.youtube.com/watch?v=E7Yn5biBZ58&amp;list=FLQyA0IDUNh2fQuGTZ2CEjug&amp;index=3">AsyncIO Event Loop by EdgeDB</a><li><a href="https://realpython.com/async-io-python/">AsyncIO by Real Python</a><li><a href="https://mleue.com/posts/yield-to-async-await/">Yield to Async-await by Mleue</a><li><a href="https://leimao.github.io/blog/Python-AsyncIO-Event-Loop/">Event Loop by Lei Mao</a></ol></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw me-1"></i> <a href="/categories/tech/">Tech</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw me-1"></i> <a href="/tags/python/" class="post-tag no-text-decoration" >Python</a> <a href="/tags/concurrency/" class="post-tag no-text-decoration" >Concurrency</a></div><div class=" post-tail-bottom d-flex justify-content-between align-items-center mt-5 pb-2 " ><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper d-flex align-items-center"> <span class="share-label text-muted">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Generators%20-%20The%20Beginning%20of%20Asynchronicity%20in%20Python%20-%20Phyo's%20Log&url=https%3A%2F%2Fyarkhinephyo.github.io%2Fposts%2Fasync-io-event-loop%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Generators%20-%20The%20Beginning%20of%20Asynchronicity%20in%20Python%20-%20Phyo's%20Log&u=https%3A%2F%2Fyarkhinephyo.github.io%2Fposts%2Fasync-io-event-loop%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https%3A%2F%2Fyarkhinephyo.github.io%2Fposts%2Fasync-io-event-loop%2F&text=Generators%20-%20The%20Beginning%20of%20Asynchronicity%20in%20Python%20-%20Phyo's%20Log" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <button id="copy-link" aria-label="Copy link" class="btn small" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy link" data-title-succeed="Link copied successfully!" > <i class="fa-fw fas fa-link pe-none fs-6"></i> </button> </span></div></div></div></article></main><aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 mb-5 text-muted"><div class="access"><section id="access-lastmod"><h2 class="panel-heading">Recently Updated</h2><ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2"><li class="text-truncate lh-lg"> <a href="/posts/containers-under-the-hood/">Learning Points: Containers Under the Hood</a><li class="text-truncate lh-lg"> <a href="/posts/hashicorp-vault/">Learning Points: Hashicorp Vault</a><li class="text-truncate lh-lg"> <a href="/posts/cassandra-as-a-service/">Learning Points: Cassandra as a Service (AstraDB)</a><li class="text-truncate lh-lg"> <a href="/posts/large-pages-in-linux-kernel/">Learning Points: Large Pages in the Linux Kernel</a><li class="text-truncate lh-lg"> <a href="/posts/linux-perf-monitoring-tools/">Learning Points: Linux Performance Tools</a></ul></section><section><h2 class="panel-heading">Trending Tags</h2><div class="d-flex flex-wrap mt-3 mb-1 me-3"> <a class="post-tag btn btn-outline-primary" href="/tags/learning-points/">Learning-Points</a> <a class="post-tag btn btn-outline-primary" href="/tags/system-design/">System-Design</a> <a class="post-tag btn btn-outline-primary" href="/tags/networking/">Networking</a> <a class="post-tag btn btn-outline-primary" href="/tags/operating-system/">Operating-System</a> <a class="post-tag btn btn-outline-primary" href="/tags/database/">Database</a> <a class="post-tag btn btn-outline-primary" href="/tags/c/">C</a> <a class="post-tag btn btn-outline-primary" href="/tags/concurrency/">Concurrency</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-engineering/">Data-Engineering</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-science/">Data-Science</a> <a class="post-tag btn btn-outline-primary" href="/tags/git/">Git</a></div></section></div><section id="toc-wrapper" class="ps-0 pe-4"><h2 class="panel-heading ps-3 pt-2 mb-2">Contents</h2><nav id="toc"></nav></section></aside></div><div class="row"><div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4"><aside id="related-posts" aria-labelledby="related-label"><h3 class="mb-4" id="related-label">Further Reading</h3><nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4"><article class="col"> <a href="/posts/speed-up-python-with-ctypes/" class="post-preview card h-100"><div class="card-body"> <time data-ts="1649124000" data-df="ll" > Apr 5, 2022 </time><h4 class="pt-0 my-2">Speed up Python applications With Ctypes Library</h4><div class="text-muted"><p> There are multiple ways to speed up computations in Python. The cython language compiles Python-like syntax into CPython extensions. Libraries such as numpy provides methods to manipulate large arr...</p></div></div></a></article><article class="col"> <a href="/posts/snowflake-new-streams-talk/" class="post-preview card h-100"><div class="card-body"> <time data-ts="1705803600" data-df="ll" > Jan 21, 2024 </time><h4 class="pt-0 my-2">Learning Points: Snowflake Iceberg, Streaming, Unistore</h4><div class="text-muted"><p> This video is about Snowflake Iceberg Tables, Streaming Ingest and Unistore. The presenters are N.Single, T.Jones and A.Motivala as part of the Database Seminar Series by CMU Database Group. Probl...</p></div></div></a></article><article class="col"> <a href="/posts/streamlining-fedramp-compliance/" class="post-preview card h-100"><div class="card-body"> <time data-ts="1705809300" data-df="ll" > Jan 21, 2024 </time><h4 class="pt-0 my-2">Learning Points: Streamlining FedRAMP Compliance with CNCF</h4><div class="text-muted"><p> This video is about streamlining FedRAMP compliance with CNCF technologies. The presenters are Ali Monfre and Vlad Ungureanu from Palantir Technologies. FedRAMP Overview FedRAMP is the accreditat...</p></div></div></a></article></nav></aside><nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation"><div class="btn btn-outline-primary disabled" aria-label="Older"><p>-</p></div><a href="/posts/speed-up-python-with-ctypes/" class="btn btn-outline-primary" aria-label="Newer" ><p>Speed up Python applications With Ctypes Library</p></a></nav><footer aria-label="Site Info" class=" d-flex flex-column justify-content-center text-muted flex-lg-row justify-content-lg-between align-items-lg-center pb-lg-3 " ><p> © <time>2024</time> <a href="https://github.com/yarkhinephyo">Yar Khine Phyo</a>. <span data-bs-toggle="tooltip" data-bs-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author." >Some rights reserved.</span></p><p>Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></footer></div></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-11 content"><div id="search-hints"><section><h2 class="panel-heading">Trending Tags</h2><div class="d-flex flex-wrap mt-3 mb-1 me-3"> <a class="post-tag btn btn-outline-primary" href="/tags/learning-points/">Learning-Points</a> <a class="post-tag btn btn-outline-primary" href="/tags/system-design/">System-Design</a> <a class="post-tag btn btn-outline-primary" href="/tags/networking/">Networking</a> <a class="post-tag btn btn-outline-primary" href="/tags/operating-system/">Operating-System</a> <a class="post-tag btn btn-outline-primary" href="/tags/database/">Database</a> <a class="post-tag btn btn-outline-primary" href="/tags/c/">C</a> <a class="post-tag btn btn-outline-primary" href="/tags/concurrency/">Concurrency</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-engineering/">Data-Engineering</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-science/">Data-Science</a> <a class="post-tag btn btn-outline-primary" href="/tags/git/">Git</a></div></section></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><aside aria-label="Scroll to Top"> <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow"> <i class="fas fa-angle-up"></i> </button></aside></div><div id="mask"></div><script src="https://cdn.jsdelivr.net/combine/npm/jquery@3.7.1/dist/jquery.min.js,npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js,npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/magnific-popup@1.1.0/dist/jquery.magnific-popup.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.10/dayjs.min.js,npm/dayjs@1.11.10/locale/en.min.js,npm/dayjs@1.11.10/plugin/relativeTime.min.js,npm/dayjs@1.11.10/plugin/localizedFormat.min.js,npm/tocbot@4.25.0/dist/tocbot.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/unregister.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-KGM14E7CDB"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-KGM14E7CDB'); }); </script> <script> /* Note: dependent library will be loaded in `js-selector.html` */ SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<article class="px-1 px-sm-2 px-lg-4 px-xl-0"><header><h2><a href="{url}">{title}</a></h2><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div></header><p>{snippet}</p></article>', noResultsText: '<p class="mt-5"></p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="me-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>

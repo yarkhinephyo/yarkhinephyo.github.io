@@ -1,0 +1,287 @@
+<!doctype html><html lang="en" data-mode="light"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f7f7"><meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1b1b1e"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="viewport" content="width=device-width, user-scalable=no initial-scale=1, shrink-to-fit=no, viewport-fit=cover" ><meta name="generator" content="Jekyll v4.3.3" /><meta property="og:title" content="Speed up Python applications With Ctypes Library" /><meta property="og:locale" content="en" /><meta name="description" content="There are multiple ways to speed up computations in Python. The cython language compiles Python-like syntax into CPython extensions. Libraries such as numpy provides methods to manipulate large arrays and matrices efficiently with underlying C data structures." /><meta property="og:description" content="There are multiple ways to speed up computations in Python. The cython language compiles Python-like syntax into CPython extensions. Libraries such as numpy provides methods to manipulate large arrays and matrices efficiently with underlying C data structures." /><link rel="canonical" href="https://yarkhinephyo.github.io/posts/speed-up-python-with-ctypes/" /><meta property="og:url" content="https://yarkhinephyo.github.io/posts/speed-up-python-with-ctypes/" /><meta property="og:site_name" content="Phyo’s Log" /><meta property="og:type" content="article" /><meta property="article:published_time" content="2022-04-05T02:00:00+00:00" /><meta name="twitter:card" content="summary" /><meta property="twitter:title" content="Speed up Python applications With Ctypes Library" /><meta name="google-site-verification" content="2UleTuNSIWIpwLx2fe8HmZnxBJIFsf8S8208z2wBbc4" /> <script type="application/ld+json"> {"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-01-21T02:30:54+00:00","datePublished":"2022-04-05T02:00:00+00:00","description":"There are multiple ways to speed up computations in Python. The cython language compiles Python-like syntax into CPython extensions. Libraries such as numpy provides methods to manipulate large arrays and matrices efficiently with underlying C data structures.","headline":"Speed up Python applications With Ctypes Library","mainEntityOfPage":{"@type":"WebPage","@id":"https://yarkhinephyo.github.io/posts/speed-up-python-with-ctypes/"},"url":"https://yarkhinephyo.github.io/posts/speed-up-python-with-ctypes/"}</script><title>Speed up Python applications With Ctypes Library | Phyo's Log</title><link rel="apple-touch-icon" sizes="180x180" href="/assets/img/favicons/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicons/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/img/favicons/favicon-16x16.png"><link rel="manifest" href="/assets/img/favicons/site.webmanifest"><link rel="shortcut icon" href="/assets/img/favicons/favicon.ico"><meta name="apple-mobile-web-app-title" content="Phyo's Log"><meta name="application-name" content="Phyo's Log"><meta name="msapplication-TileColor" content="#da532c"><meta name="msapplication-config" content="/assets/img/favicons/browserconfig.xml"><meta name="theme-color" content="#ffffff"><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="dns-prefetch" href="https://fonts.gstatic.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com" ><link rel="dns-prefetch" href="https://fonts.googleapis.com" ><link rel="preconnect" href="https://cdn.jsdelivr.net" ><link rel="dns-prefetch" href="https://cdn.jsdelivr.net" ><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lato&family=Source+Sans+Pro:wght@400;600;700;900&display=swap"><link rel="preconnect" href="https://www.google-analytics.com" crossorigin="use-credentials"><link rel="dns-prefetch" href="https://www.google-analytics.com"><link rel="preconnect" href="https://www.googletagmanager.com" crossorigin="anonymous"><link rel="dns-prefetch" href="https://www.googletagmanager.com"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.1/css/all.min.css"><link rel="stylesheet" href="/assets/css/jekyll-theme-chirpy.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tocbot@4.25.0/dist/tocbot.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/magnific-popup@1.1.0/dist/magnific-popup.min.css"><body><aside aria-label="Sidebar" id="sidebar" class="d-flex flex-column align-items-end"><header class="profile-wrapper"> <a href="/" id="avatar" class="rounded-circle"><img src="/assets/img/me_2.jpg" width="112" height="112" alt="avatar" onerror="this.style.display='none'"></a><h1 class="site-title"> <a href="/">Phyo's Log</a></h1><p class="site-subtitle fst-italic mb-0">Thoughts on tech and random things that I read. For my future self with goldfish memory.</p></header><nav class="flex-column flex-grow-1 w-100 ps-0"><ul class="nav"><li class="nav-item"> <a href="/" class="nav-link"> <i class="fa-fw fas fa-home"></i> <span>HOME</span> </a><li class="nav-item"> <a href="/tags/" class="nav-link"> <i class="fa-fw fas fa-tag"></i> <span>TAGS</span> </a><li class="nav-item"> <a href="/categories/" class="nav-link"> <i class="fa-fw fas fa-stream"></i> <span>CATEGORIES</span> </a><li class="nav-item"> <a href="/timeline/" class="nav-link"> <i class="fa-fw fas fa-archive"></i> <span>TIMELINE</span> </a><li class="nav-item"> <a href="/about-me/" class="nav-link"> <i class="fa-fw fas fa-info-circle"></i> <span>ABOUT ME</span> </a></ul></nav><div class="sidebar-bottom d-flex flex-wrap align-items-center w-100"> <a href="https://github.com/yarkhinephyo" aria-label="github" target="_blank" rel="noopener noreferrer" > <i class="fab fa-github"></i> </a> <a href="javascript:location.href = 'mailto:' + ['yarkhinephyo','gmail.com'].join('@')" aria-label="email" > <i class="fas fa-envelope"></i> </a> <a href="https://www.linkedin.com/in/yar-khine-phyo/" aria-label="linkedin" target="_blank" rel="noopener noreferrer" > <i class="fab fa-linkedin"></i> </a></div></aside><div id="main-wrapper" class="d-flex justify-content-center"><div class="container d-flex flex-column px-xxl-5"><header id="topbar-wrapper" aria-label="Top Bar"><div id="topbar" class="d-flex align-items-center justify-content-between px-lg-3 h-100" ><nav id="breadcrumb" aria-label="Breadcrumb"> <span> <a href="/"> Home </a> </span> <span>Speed up Python applications With Ctypes Library</span></nav><button type="button" id="sidebar-trigger" class="btn btn-link"> <i class="fas fa-bars fa-fw"></i> </button><div id="topbar-title"> Post</div><button type="button" id="search-trigger" class="btn btn-link"> <i class="fas fa-search fa-fw"></i> </button> <search class="align-items-center ms-3 ms-lg-0"> <i class="fas fa-search fa-fw"></i> <input class="form-control" id="search-input" type="search" aria-label="search" autocomplete="off" placeholder="Search..." > </search> <button type="button" class="btn btn-link text-decoration-none" id="search-cancel">Cancel</button></div></header><div class="row flex-grow-1"><main aria-label="Main Content" class="col-12 col-lg-11 col-xl-9 px-md-4"><article class="px-1"><header><h1 data-toc-skip>Speed up Python applications With Ctypes Library</h1><div class="post-meta text-muted"> <span> Posted <time data-ts="1649124000" data-df="ll" data-bs-toggle="tooltip" data-bs-placement="bottom" > Apr 5, 2022 </time> </span> <span> Updated <time data-ts="1705804254" data-df="ll" data-bs-toggle="tooltip" data-bs-placement="bottom" > Jan 21, 2024 </time> </span><div class="d-flex justify-content-between"> <span> By <em> <a href="https://github.com/yarkhinephyo">Yar Khine Phyo</a> </em> </span> <span class="readtime" data-bs-toggle="tooltip" data-bs-placement="bottom" title="1352 words" > <em>7 min</em> read</span></div></div></header><div class="content"><p>There are multiple ways to speed up computations in Python. The <code class="language-plaintext highlighter-rouge">cython</code> language compiles Python-like syntax into <code class="language-plaintext highlighter-rouge">CPython</code> extensions. Libraries such as <code class="language-plaintext highlighter-rouge">numpy</code> provides methods to manipulate large arrays and matrices efficiently with underlying C data structures.</p><p>In this post, I will be discussing the <code class="language-plaintext highlighter-rouge">ctypes</code> module. It provides C-compatible data types to so that Python functions can use C-compiled shared libraries. Therefore, we can offload computationally intensive modules of a Python application into C where the developers will have more fine-grained control. To my surprise, this comes as part of the Python standard library, so no external dependencies are required!</p><h3 id="code-to-optimize---prime-number-checker"><span class="me-2">Code to optimize - prime number checker</span><a href="#code-to-optimize---prime-number-checker" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>I have created a sample program that we can speed up afterwards using the <code class="language-plaintext highlighter-rouge">ctypes</code> module. The <code class="language-plaintext highlighter-rouge">num_primes()</code> calculates the total number of primes in a list by looping through each item.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+</pre><td class="rouge-code"><pre><span class="c1"># prime.py
+</span><span class="k">def</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">num</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="nf">int</span><span class="p">(</span><span class="n">num</span><span class="o">**</span><span class="p">(</span><span class="mf">0.5</span><span class="p">))):</span>
+        <span class="k">if</span> <span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="mi">0</span>
+
+<span class="k">def</span> <span class="nf">num_primes</span><span class="p">(</span><span class="n">num_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]):</span>
+    <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">num</span> <span class="ow">in</span> <span class="n">num_list</span><span class="p">:</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="nf">is_prime</span><span class="p">(</span><span class="n">num</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">count</span>
+</pre></table></code></div></div><p>Let’s see the number of primes in a list of 1 million integers. Note that we use consecutive numbers for the example but it does not have to be.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre><td class="rouge-code"><pre><span class="kn">from</span> <span class="n">prime</span> <span class="kn">import</span> <span class="n">num_primes</span>
+
+<span class="n">MAX_NUM</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">num_list</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">MAX_NUM</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">timeit_function</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nf">num_primes</span><span class="p">(</span><span class="n">num_list</span><span class="p">)</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="nf">timeit_function</span><span class="p">())</span>
+</pre></table></code></div></div><p>It takes around 3.4 seconds to run. How can we speed this up?</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; python -m timeit -n 5 -s 'import test_python as t' 't.timeit_function()'
+Primes: 921295
+5 loops, best of 5: 3.4 sec per loop
+</pre></table></code></div></div><h3 id="why-python-threading-module-does-not-work"><span class="me-2">Why Python threading module does not work</span><a href="#why-python-threading-module-does-not-work" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>As Python has a <code class="language-plaintext highlighter-rouge">threading</code> module, one idea is to parallalize calculations across the entire list by using multiple threads. However, this is not possible due to Python’s <a href="https://realpython.com/python-gil/">Global Interpreter Lock (GIL)</a>, which prevents multiple threads in a process from executing Python bytecode at the same time. Hence for non-I/O operations, there will not be any speed up.</p><h3 id="rewriting-prime-checker-in-c"><span class="me-2">Rewriting prime checker in C</span><a href="#rewriting-prime-checker-in-c" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>The prime checker is reimplemented in C as shown below, then compiled it into a shared library <code class="language-plaintext highlighter-rouge">prime.so</code>. Note that the program logic is exactly the same.</p><div class="language-c highlighter-rouge"><div class="code-header"> <span data-label-text="C"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre><td class="rouge-code"><pre><span class="c1">// prime.c</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;math.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">is_prime</span><span class="p">(</span><span class="kt">int</span> <span class="n">num</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">sqrt</span><span class="p">(</span><span class="n">num</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">num</span> <span class="o">%</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span> 
+
+<span class="kt">int</span> <span class="nf">num_primes</span><span class="p">(</span><span class="kt">int</span> <span class="n">arrSize</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">numArr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">arrSize</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">is_prime</span><span class="p">(</span><span class="n">numArr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="k">return</span> <span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></table></code></div></div><h3 id="calling-the-c-compiled-prime-checker-with-ctypes"><span class="me-2">Calling the C-compiled prime checker with ctypes</span><a href="#calling-the-c-compiled-prime-checker-with-ctypes" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p><a href="/assets/img/2022-04-05-1.jpg" class="popup img-link shimmer"><img src="/assets/img/2022-04-05-1.jpg" alt="ctypes" loading="lazy"></a></p><p>The <code class="language-plaintext highlighter-rouge">ctypes</code> library provides C-compatible data types in Python. All we need to do is load the shared library with <code class="language-plaintext highlighter-rouge">CDLL()</code> API and then declare the parameters/ return types accordingly with <code class="language-plaintext highlighter-rouge">argtypes</code> and <code class="language-plaintext highlighter-rouge">restype</code> attributes.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="kn">from</span> <span class="n">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Load the shared library
+</span><span class="n">lib</span> <span class="o">=</span> <span class="nc">CDLL</span><span class="p">(</span><span class="sh">"</span><span class="s">./libprime.so</span><span class="sh">"</span><span class="p">)</span>
+<span class="c1"># Declare the return data as 32-bit int
+</span><span class="n">lib</span><span class="p">.</span><span class="n">num_primes</span><span class="p">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int32</span>
+<span class="c1"># Declare the arguments as a 32-bit int and a pointer for 32-bit int (for list)
+</span><span class="n">lib</span><span class="p">.</span><span class="n">num_primes</span><span class="p">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_int32</span><span class="p">,</span> <span class="nc">POINTER</span><span class="p">(</span><span class="n">c_int32</span><span class="p">)]</span>
+</pre></table></code></div></div><p>Afterwards, the <code class="language-plaintext highlighter-rouge">num_primes()</code> in the shared library can be called! Note that the <code class="language-plaintext highlighter-rouge">num_list</code> has to be converted from Python list into a contiguous array of C with a method provided by <code class="language-plaintext highlighter-rouge">ctypes</code>.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="n">MAX_NUM</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">num_list</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">MAX_NUM</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">timeit_function</span><span class="p">():</span>
+    <span class="c1"># num_list is converted into an integer array of size MAX_NUM
+</span>    <span class="k">return</span> <span class="n">lib</span><span class="p">.</span><span class="nf">num_primes</span><span class="p">(</span><span class="n">MAX_NUM</span><span class="p">,</span> <span class="p">(</span><span class="n">c_int32</span> <span class="o">*</span> <span class="n">MAX_NUM</span><span class="p">)(</span><span class="o">*</span><span class="n">num_list</span><span class="p">))</span>
+
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Primes: </span><span class="si">{</span><span class="nf">timeit_function</span><span class="p">()</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+</pre></table></code></div></div><p>For the same input of 1 million integers, the speed up is significant just by offloading the same program logic to C code. It makes sense because contiguous arrays in C can leverage caching mechanisms better than lists in Python.</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; python -m timeit -n 5 -s 'import test_ctypes as t' 't.timeit_function()'
+Primes: 921295
+5 loops, best of 5: 482 msec per loop
+</pre></table></code></div></div><h3 id="multithreading-in-the-c-shared-library-with-posix-pthreads"><span class="me-2">Multithreading in the C shared library with POSIX pthreads</span><a href="#multithreading-in-the-c-shared-library-with-posix-pthreads" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>There is one more benefit of offloading the work to C. Since the shared library is not under Python’s GIL, we can now use multithreading in C to parallelize the computations!</p><p>In the code below, the integer array is split evenly into 4 subarrays and 4 threads are spawned with POSIX <code class="language-plaintext highlighter-rouge">pthreads</code> to do parallel work. Each thread runs <code class="language-plaintext highlighter-rouge">thread_function()</code> to check the numbers in the array without any overlap between threads. The counts of prime numbers are added into <code class="language-plaintext highlighter-rouge">countByThreads</code> array which are summed up after the child threads have terminated.</p><div class="language-c highlighter-rouge"><div class="code-header"> <span data-label-text="C"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+</pre><td class="rouge-code"><pre><span class="cp">#define NUM_THREADS 4                       // 4 threads used
+</span>
+<span class="c1">// Global variables for spawn threads to access</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">gArrSize</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                          <span class="c1">// Ptr for array size</span>
+<span class="kt">int</span> <span class="o">*</span><span class="n">gNumArr</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>                           <span class="c1">// Ptr for input array</span>
+<span class="kt">int</span> <span class="n">countByThreads</span><span class="p">[</span><span class="n">NUM_THREADS</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>    <span class="c1">// Prime counts of each thread</span>
+<span class="n">pthread_t</span> <span class="n">tids</span><span class="p">[</span><span class="n">NUM_THREADS</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>        <span class="c1">// IDs of each thread</span>
+
+<span class="c1">// Function run by each thread</span>
+<span class="kt">void</span> <span class="o">*</span><span class="nf">thread_function</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">vargp</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Each thread has a different offset</span>
+    <span class="kt">int</span> <span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span> <span class="n">vargp</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// Split the array items evenly across threads</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="n">offset</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="o">*</span><span class="n">gArrSize</span><span class="p">;</span> <span class="n">i</span><span class="o">+=</span><span class="n">NUM_THREADS</span><span class="p">)</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">is_prime</span><span class="p">(</span><span class="n">gNumArr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="n">countByThreads</span><span class="p">[</span><span class="n">offset</span><span class="p">]</span> <span class="o">+=</span> <span class="n">count</span><span class="p">;</span>
+    <span class="n">free</span><span class="p">(</span><span class="n">vargp</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">num_primes</span><span class="p">(</span><span class="kt">int</span> <span class="n">arrSize</span><span class="p">,</span> <span class="kt">int</span> <span class="o">*</span><span class="n">numArr</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">gArrSize</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">arrSize</span><span class="p">;</span>
+    <span class="n">gNumArr</span> <span class="o">=</span> <span class="n">numArr</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="o">*</span><span class="n">offset</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">));</span>
+        <span class="o">*</span><span class="n">offset</span> <span class="o">=</span> <span class="n">i</span><span class="p">;</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pthread_create</span><span class="p">(</span><span class="o">&amp;</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">thread_function</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="p">)</span> <span class="n">offset</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">NUM_THREADS</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span><span class="p">(</span><span class="n">pthread_join</span><span class="p">(</span><span class="n">tids</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="nb">NULL</span><span class="p">)</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+        <span class="c1">// Combine counts from each thread after termination</span>
+        <span class="n">count</span> <span class="o">+=</span> <span class="n">countByThreads</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+        <span class="n">countByThreads</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">count</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></table></code></div></div><p>We have further sped up the code execution although there is an additional overhead of managing threads.</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; python -m timeit -n 5 -s 'import test_ctypes_pthread as t' 't.timeit_function()'
+Primes: 921295
+5 loops, best of 5: 322 msec per loop
+</pre></table></code></div></div><h3 id="calling-the-c-compiled-prime-checker-with-python-threading"><span class="me-2">Calling the C-compiled prime checker with Python threading</span><a href="#calling-the-c-compiled-prime-checker-with-python-threading" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><p>Remember the <code class="language-plaintext highlighter-rouge">threading</code> module in Python just now? Another neat thing about <code class="language-plaintext highlighter-rouge">ctypes</code> is that the program releases the GIL as long as the execution is inside the C-compiled shared library. So instead of POSIX <code class="language-plaintext highlighter-rouge">pthreads</code> in C, we can generate the threads with <code class="language-plaintext highlighter-rouge">threading</code> instead!</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre><td class="rouge-code"><pre><span class="kn">from</span> <span class="n">ctypes</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Load the shared library
+</span><span class="n">lib</span> <span class="o">=</span> <span class="nc">CDLL</span><span class="p">(</span><span class="sh">"</span><span class="s">./libprime.so</span><span class="sh">"</span><span class="p">)</span>
+<span class="c1"># Declare the return data as 32-bit integer
+</span><span class="n">lib</span><span class="p">.</span><span class="n">num_primes</span><span class="p">.</span><span class="n">restype</span> <span class="o">=</span> <span class="n">c_int32</span>
+<span class="c1"># Declare the arguments as a 32-bit integer &amp; a pointer for 32-bit integer (for list)
+</span><span class="n">lib</span><span class="p">.</span><span class="n">num_primes</span><span class="p">.</span><span class="n">argtypes</span> <span class="o">=</span> <span class="p">[</span><span class="n">c_int32</span><span class="p">,</span> <span class="nc">POINTER</span><span class="p">(</span><span class="n">c_int32</span><span class="p">)]</span>
+</pre></table></code></div></div><p>Afterwards, the <code class="language-plaintext highlighter-rouge">num_primes()</code> in the shared library can be called! Note that the <code class="language-plaintext highlighter-rouge">num_list</code> has to be converted from Python list into a contiguous array with a method provided by <code class="language-plaintext highlighter-rouge">ctypes</code>.</p><div class="language-python highlighter-rouge"><div class="code-header"> <span data-label-text="Python"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+</pre><td class="rouge-code"><pre><span class="n">MAX_NUM</span> <span class="o">=</span> <span class="mi">1000000</span>
+<span class="n">NUM_THREADS</span> <span class="o">=</span> <span class="mi">4</span>
+
+<span class="c1"># Prime counts per thread
+</span><span class="n">count_list</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">NUM_THREADS</span><span class="p">)]</span>
+<span class="c1"># One list of numbers for each thread
+</span><span class="n">num_list_list</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Split the list for multiple threads
+</span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">NUM_THREADS</span><span class="p">):</span>
+    <span class="n">num_list</span> <span class="o">=</span> <span class="nf">list</span><span class="p">(</span><span class="nf">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">MAX_NUM</span><span class="p">,</span> <span class="n">NUM_THREADS</span><span class="p">))</span>
+    <span class="n">num_list_list</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">num_list</span><span class="p">)</span>
+
+<span class="c1"># Function run by each thread
+</span><span class="k">def</span> <span class="nf">thread_function</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">num_list</span><span class="p">,</span> <span class="n">count_list</span><span class="p">):</span>
+    <span class="n">len_num_list</span> <span class="o">=</span> <span class="nf">len</span><span class="p">(</span><span class="n">num_list</span><span class="p">)</span>
+    <span class="n">count_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">lib</span><span class="p">.</span><span class="nf">num_primes</span><span class="p">(</span><span class="n">len_num_list</span><span class="p">,</span> <span class="p">(</span><span class="n">c_int32</span> <span class="o">*</span> <span class="n">len_num_list</span><span class="p">)(</span><span class="o">*</span><span class="n">num_list</span><span class="p">))</span>
+
+<span class="k">def</span> <span class="nf">timeit_function</span><span class="p">():</span>
+    <span class="n">threads</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">NUM_THREADS</span><span class="p">):</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">threading</span><span class="p">.</span><span class="nc">Thread</span><span class="p">(</span><span class="n">target</span><span class="o">=</span><span class="n">thread_function</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">num_list_list</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">count_list</span><span class="p">))</span>
+        <span class="n">t</span><span class="p">.</span><span class="nf">start</span><span class="p">()</span>
+        <span class="n">threads</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">thread</span> <span class="ow">in</span> <span class="n">threads</span><span class="p">:</span>
+        <span class="n">thread</span><span class="p">.</span><span class="nf">join</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nf">sum</span><span class="p">(</span><span class="n">count_list</span><span class="p">)</span> <span class="c1"># Combine counts from each thread
+</span>    
+<span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Primes: </span><span class="si">{</span><span class="nf">timeit_function</span><span class="p">()</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+</pre></table></code></div></div><p>For this example, the speed up is comparable to using <code class="language-plaintext highlighter-rouge">pthreads</code>.</p><div class="language-plaintext highlighter-rouge"><div class="code-header"> <span data-label-text="Plaintext"><i class="fas fa-code fa-fw small"></i></span> <button aria-label="copy" data-title-succeed="Copied!"><i class="far fa-clipboard"></i></button></div><div class="highlight"><code><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre><td class="rouge-code"><pre>&gt;&gt;&gt; python -m timeit -n 5 -s 'import test_ctypes_threading as t' 't.timeit_function()'
+Primes: 921295
+5 loops, best of 5: 313 msec per loop
+</pre></table></code></div></div><p>The code demonstrations can be found <a href="https://github.com/yarkhinephyo/python-threading-with-ctypes">here</a>.</p><h3 id="resources"><span class="me-2">Resources</span><a href="#resources" class="anchor text-muted"><i class="fas fa-hashtag"></i></a></h3><ol><li><a href="https://www.youtube.com/watch?v=p_LUzwylf-Y&amp;list=FLQyA0IDUNh2fQuGTZ2CEjug&amp;index=1&amp;t=506s">Ctypes Made Easy by Dublin User Group</a><li><a href="http://caswenson.com/2009_06_13_bypassing_the_python_gil_with_ctypes.html">Bypassing GIL with ctypes by Christopher Swenson</a><li><a href="https://docs.python.org/3/library/ctypes.html">Python ctypes documentation</a></ol></div><div class="post-tail-wrapper text-muted"><div class="post-meta mb-3"> <i class="far fa-folder-open fa-fw me-1"></i> <a href="/categories/tech/">Tech</a></div><div class="post-tags"> <i class="fa fa-tags fa-fw me-1"></i> <a href="/tags/python/" class="post-tag no-text-decoration" >Python</a> <a href="/tags/c/" class="post-tag no-text-decoration" >C</a> <a href="/tags/concurrency/" class="post-tag no-text-decoration" >Concurrency</a></div><div class=" post-tail-bottom d-flex justify-content-between align-items-center mt-5 pb-2 " ><div class="license-wrapper"> This post is licensed under <a href="https://creativecommons.org/licenses/by/4.0/"> CC BY 4.0 </a> by the author.</div><div class="share-wrapper d-flex align-items-center"> <span class="share-label text-muted">Share</span> <span class="share-icons"> <a href="https://twitter.com/intent/tweet?text=Speed%20up%20Python%20applications%20With%20Ctypes%20Library%20-%20Phyo's%20Log&url=https%3A%2F%2Fyarkhinephyo.github.io%2Fposts%2Fspeed-up-python-with-ctypes%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Twitter" aria-label="Twitter"> <i class="fa-fw fab fa-twitter"></i> </a> <a href="https://www.facebook.com/sharer/sharer.php?title=Speed%20up%20Python%20applications%20With%20Ctypes%20Library%20-%20Phyo's%20Log&u=https%3A%2F%2Fyarkhinephyo.github.io%2Fposts%2Fspeed-up-python-with-ctypes%2F" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Facebook" aria-label="Facebook"> <i class="fa-fw fab fa-facebook-square"></i> </a> <a href="https://t.me/share/url?url=https%3A%2F%2Fyarkhinephyo.github.io%2Fposts%2Fspeed-up-python-with-ctypes%2F&text=Speed%20up%20Python%20applications%20With%20Ctypes%20Library%20-%20Phyo's%20Log" target="_blank" rel="noopener" data-bs-toggle="tooltip" data-bs-placement="top" title="Telegram" aria-label="Telegram"> <i class="fa-fw fab fa-telegram"></i> </a> <button id="copy-link" aria-label="Copy link" class="btn small" data-bs-toggle="tooltip" data-bs-placement="top" title="Copy link" data-title-succeed="Link copied successfully!" > <i class="fa-fw fas fa-link pe-none fs-6"></i> </button> </span></div></div></div></article></main><aside aria-label="Panel" id="panel-wrapper" class="col-xl-3 ps-2 mb-5 text-muted"><div class="access"><section id="access-lastmod"><h2 class="panel-heading">Recently Updated</h2><ul class="content list-unstyled ps-0 pb-1 ms-1 mt-2"><li class="text-truncate lh-lg"> <a href="/posts/containers-under-the-hood/">Learning Points: Containers Under the Hood</a><li class="text-truncate lh-lg"> <a href="/posts/hashicorp-vault/">Learning Points: Hashicorp Vault</a><li class="text-truncate lh-lg"> <a href="/posts/cassandra-as-a-service/">Learning Points: Cassandra as a Service (AstraDB)</a><li class="text-truncate lh-lg"> <a href="/posts/large-pages-in-linux-kernel/">Learning Points: Large Pages in the Linux Kernel</a><li class="text-truncate lh-lg"> <a href="/posts/linux-perf-monitoring-tools/">Learning Points: Linux Performance Tools</a></ul></section><section><h2 class="panel-heading">Trending Tags</h2><div class="d-flex flex-wrap mt-3 mb-1 me-3"> <a class="post-tag btn btn-outline-primary" href="/tags/learning-points/">Learning-Points</a> <a class="post-tag btn btn-outline-primary" href="/tags/system-design/">System-Design</a> <a class="post-tag btn btn-outline-primary" href="/tags/networking/">Networking</a> <a class="post-tag btn btn-outline-primary" href="/tags/operating-system/">Operating-System</a> <a class="post-tag btn btn-outline-primary" href="/tags/database/">Database</a> <a class="post-tag btn btn-outline-primary" href="/tags/c/">C</a> <a class="post-tag btn btn-outline-primary" href="/tags/concurrency/">Concurrency</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-engineering/">Data-Engineering</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-science/">Data-Science</a> <a class="post-tag btn btn-outline-primary" href="/tags/git/">Git</a></div></section></div><section id="toc-wrapper" class="ps-0 pe-4"><h2 class="panel-heading ps-3 pt-2 mb-2">Contents</h2><nav id="toc"></nav></section></aside></div><div class="row"><div id="tail-wrapper" class="col-12 col-lg-11 col-xl-9 px-md-4"><aside id="related-posts" aria-labelledby="related-label"><h3 class="mb-4" id="related-label">Further Reading</h3><nav class="row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4 mb-4"><article class="col"> <a href="/posts/async-io-event-loop/" class="post-preview card h-100"><div class="card-body"> <time data-ts="1648976400" data-df="ll" > Apr 3, 2022 </time><h4 class="pt-0 my-2">Generators - The Beginning of Asynchronicity in Python</h4><div class="text-muted"><p> If you have worked with asynchronous programming in Python, you may have used the async and await keywords before. It turns out that Python Generators are actually the building blocks of these abst...</p></div></div></a></article><article class="col"> <a href="/posts/getting-started-with-ebpf/" class="post-preview card h-100"><div class="card-body"> <time data-ts="1706151600" data-df="ll" > Jan 25, 2024 </time><h4 class="pt-0 my-2">Learning Points: Getting Started with eBPF</h4><div class="text-muted"><p> This video is an introductory video on eBPF presented by Liz Rice from Isovalent. In the video description, there are also really interesting hands-on exercises. Overview Adding features to the k...</p></div></div></a></article><article class="col"> <a href="/posts/snowflake-new-streams-talk/" class="post-preview card h-100"><div class="card-body"> <time data-ts="1705803600" data-df="ll" > Jan 21, 2024 </time><h4 class="pt-0 my-2">Learning Points: Snowflake Iceberg, Streaming, Unistore</h4><div class="text-muted"><p> This video is about Snowflake Iceberg Tables, Streaming Ingest and Unistore. The presenters are N.Single, T.Jones and A.Motivala as part of the Database Seminar Series by CMU Database Group. Probl...</p></div></div></a></article></nav></aside><nav class="post-navigation d-flex justify-content-between" aria-label="Post Navigation"> <a href="/posts/async-io-event-loop/" class="btn btn-outline-primary" aria-label="Older" ><p>Generators - The Beginning of Asynchronicity in Python</p></a> <a href="/posts/javascript-module-ecosystem/" class="btn btn-outline-primary" aria-label="Newer" ><p>Quick History of JavaScript Module Ecosystem</p></a></nav><footer aria-label="Site Info" class=" d-flex flex-column justify-content-center text-muted flex-lg-row justify-content-lg-between align-items-lg-center pb-lg-3 " ><p> © <time>2024</time> <a href="https://github.com/yarkhinephyo">Yar Khine Phyo</a>. <span data-bs-toggle="tooltip" data-bs-placement="top" title="Except where otherwise noted, the blog posts on this site are licensed under the Creative Commons Attribution 4.0 International (CC BY 4.0) License by the author." >Some rights reserved.</span></p><p>Powered by <a href="https://jekyllrb.com" target="_blank" rel="noopener">Jekyll</a> with <a href="https://github.com/cotes2020/jekyll-theme-chirpy" target="_blank" rel="noopener">Chirpy</a> theme.</p></footer></div></div><div id="search-result-wrapper" class="d-flex justify-content-center unloaded"><div class="col-11 content"><div id="search-hints"><section><h2 class="panel-heading">Trending Tags</h2><div class="d-flex flex-wrap mt-3 mb-1 me-3"> <a class="post-tag btn btn-outline-primary" href="/tags/learning-points/">Learning-Points</a> <a class="post-tag btn btn-outline-primary" href="/tags/system-design/">System-Design</a> <a class="post-tag btn btn-outline-primary" href="/tags/networking/">Networking</a> <a class="post-tag btn btn-outline-primary" href="/tags/operating-system/">Operating-System</a> <a class="post-tag btn btn-outline-primary" href="/tags/database/">Database</a> <a class="post-tag btn btn-outline-primary" href="/tags/c/">C</a> <a class="post-tag btn btn-outline-primary" href="/tags/concurrency/">Concurrency</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-engineering/">Data-Engineering</a> <a class="post-tag btn btn-outline-primary" href="/tags/data-science/">Data-Science</a> <a class="post-tag btn btn-outline-primary" href="/tags/git/">Git</a></div></section></div><div id="search-results" class="d-flex flex-wrap justify-content-center text-muted mt-3"></div></div></div></div><aside aria-label="Scroll to Top"> <button id="back-to-top" type="button" class="btn btn-lg btn-box-shadow"> <i class="fas fa-angle-up"></i> </button></aside></div><div id="mask"></div><script src="https://cdn.jsdelivr.net/combine/npm/jquery@3.7.1/dist/jquery.min.js,npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js,npm/simple-jekyll-search@1.10.0/dest/simple-jekyll-search.min.js,npm/loading-attribute-polyfill@2.1.1/dist/loading-attribute-polyfill.umd.min.js,npm/magnific-popup@1.1.0/dist/jquery.magnific-popup.min.js,npm/clipboard@2.0.11/dist/clipboard.min.js,npm/dayjs@1.11.10/dayjs.min.js,npm/dayjs@1.11.10/locale/en.min.js,npm/dayjs@1.11.10/plugin/relativeTime.min.js,npm/dayjs@1.11.10/plugin/localizedFormat.min.js,npm/tocbot@4.25.0/dist/tocbot.min.js"></script> <script defer src="/assets/js/dist/post.min.js"></script> <script defer src="/unregister.js"></script> <script defer src="https://www.googletagmanager.com/gtag/js?id=G-KGM14E7CDB"></script> <script> document.addEventListener("DOMContentLoaded", function(event) { window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', 'G-KGM14E7CDB'); }); </script> <script> /* Note: dependent library will be loaded in `js-selector.html` */ SimpleJekyllSearch({ searchInput: document.getElementById('search-input'), resultsContainer: document.getElementById('search-results'), json: '/assets/js/data/search.json', searchResultTemplate: '<article class="px-1 px-sm-2 px-lg-4 px-xl-0"><header><h2><a href="{url}">{title}</a></h2><div class="post-meta d-flex flex-column flex-sm-row text-muted mt-1 mb-1"> {categories} {tags}</div></header><p>{snippet}</p></article>', noResultsText: '<p class="mt-5"></p>', templateMiddleware: function(prop, value, template) { if (prop === 'categories') { if (value === '') { return `${value}`; } else { return `<div class="me-sm-4"><i class="far fa-folder fa-fw"></i>${value}</div>`; } } if (prop === 'tags') { if (value === '') { return `${value}`; } else { return `<div><i class="fa fa-tag fa-fw"></i>${value}</div>`; } } } }); </script>
